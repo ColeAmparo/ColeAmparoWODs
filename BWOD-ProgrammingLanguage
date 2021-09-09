@@ -1,0 +1,124 @@
+class ProgrammingLanguage {
+  constructor(name, paradigm, courses) {
+    this.name = name;
+    this.paradigm = paradigm;
+    this.courses = courses;
+  }
+}
+
+class Curriculum {
+  constructor() {
+    this.languages = [];
+  }
+  
+  addLanguage(ProgrammingLanguage) {
+    this.languages.push(ProgrammingLanguage);
+    console.log(this.languages.length);
+  }
+  
+  findByName(name) {
+    for (let i of this.languages) {
+      if(name === i.name) {
+        return i;
+      }
+    }
+      return undefined;
+  }
+  
+  findByCourse(course) {
+    let returnArray = [];
+    for (let i of this.languages) {
+        if (i.courses.indexOf(course) >= 0) {
+          returnArray.push(i);
+        }
+    }
+    return returnArray;
+  }
+  
+  countByParadigm() {
+    let paradigm = {};
+    let number = 0;
+    for (let progLanguage of this.languages) {
+      if (paradigm.hasOwnProperty(progLanguage.paradigm)) {
+        paradigm[progLanguage.paradigm]++;
+      } else {
+        paradigm[progLanguage.paradigm] = 1;
+      }
+    }
+    for(let property in paradigm) {
+      console.log(`${property}: ${paradigm[property]}`)
+    }
+  }
+}
+
+const curriculum = new Curriculum();
+
+// curriculum does not yet contain any languages
+console.log(curriculum.findByName('Java'));                // should print undefined
+console.log(curriculum.findByCourse('ICS 111'));           // should print []
+
+// Similarly, calling countByParadigm should not print anything
+curriculum.countByParadigm(); // should not print anything
+
+// Add Java
+console.log(curriculum.addLanguage(new ProgrammingLanguage('Java', 
+                                                           'Object-Oriented', 
+                                                           ['ICS 111', 'ICS 211']))); // should print 1
+                                                           
+// Should be able to find Java within curriculum
+console.log(curriculum.findByName('Java'));                // should print {name: 'Java', paradigm: 'Object-Oriented', courses: ['ICS 111', 'ICS 211']}
+console.log(curriculum.findByCourse('ICS 111'));           // should print [{name: 'Java', paradigm: 'Object-Oriented', courses: ['ICS 111', 'ICS 211']}]
+
+// countByParadigm should now print the Java output as well
+curriculum.countByParadigm(); // should print Object-Oriented: 1
+
+// Should not be able to find languages that have not been added yet
+console.log(curriculum.findByName('JavaScript')); // should print undefined
+
+// Now add JavaScript
+console.log(curriculum.addLanguage(new ProgrammingLanguage('JavaScript', 
+                                                           'Scripting', 
+                                                           ['ICS 215', 'ICS 314', 'ICS 414']))); // should print 2
+
+// Should still be able to find Java within curriculum
+console.log(curriculum.findByName('Java'));                // should print {name: 'Java', paradigm: 'Object-Oriented', courses: ['ICS 111', 'ICS 211']}
+console.log(curriculum.findByCourse('ICS 111'));           // should print [{name: 'Java', paradigm: 'Object-Oriented', courses: ['ICS 111', 'ICS 211']}]
+
+// Should also be able to find JavaScript within curriculum
+console.log(curriculum.findByName('JavaScript'));    // should print {name: 'JavaScript', paradigm: 'Scripting', courses: ['ICS 215', 'ICS 314', 'ICS 414']}
+console.log(curriculum.findByCourse('ICS 314'));     // should print [{name: 'JavaScript', paradigm: 'Scripting', courses: ['ICS 215', 'ICS 314', 'ICS 414']}]
+
+// countByParadigm should now account for JavaScript
+curriculum.countByParadigm(); // should print Object-Oriented: 1
+                              //              Scripting: 1
+
+// Add several other languages
+console.log(curriculum.addLanguage(new ProgrammingLanguage('C', 
+                                                           'Imperative', 
+                                                           ['ICS 212', 'EE 160']))); // should print 3
+console.log(curriculum.addLanguage(new ProgrammingLanguage('LISP', 
+                                                           'Functional', 
+                                                           ['ICS 313', 'ICS 361']))); // should print 4
+console.log(curriculum.addLanguage(new ProgrammingLanguage('Prolog', 
+                                                           'Logical', 
+                                                           ['ICS 313', 'ICS 361']))); // should print 5
+console.log(curriculum.addLanguage(new ProgrammingLanguage('Perl',
+                                                           'Scripting', 
+                                                           ['ICS 215']))); // should print 6
+console.log(curriculum.addLanguage(new ProgrammingLanguage('Ruby', 
+                                                           'Scripting', 
+                                                           []))); // should print 7
+                                                           
+// Ensure that a pseudorandom subset of values produce the expected output
+console.log(curriculum.findByName('Ruby'));      // should print {name: 'Ruby', paradigm: 'Scripting', courses: []}
+console.log(curriculum.findByCourse('ICS 313')); // should print [{name: 'LISP', paradigm: 'Functional', courses: ['ICS 313', 'ICS 361']},
+                                                 //               {name: 'Prolog', paradigm: 'Logical', courses: ['ICS 313', 'ICS 361']}]
+console.log(curriculum.findByCourse('ICS 212')); // should print [{name: 'C', paradigm: 'Imperative', courses: ['ICS 212', 'EE 160']}]
+
+// countByParadigm should properly sum the languages in each paradigm
+curriculum.countByParadigm(); // should print Functional: 1
+                              //              Imperative: 1
+                              //              Logical: 1
+                              //              Object-Oriented: 1
+                              //              Scripting: 3
+                              
